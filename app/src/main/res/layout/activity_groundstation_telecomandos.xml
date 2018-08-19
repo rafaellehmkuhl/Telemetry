@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GroundstationTelecomandos">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rbHeartbeatTelecom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="Heartbeat" />
+
+            <RadioButton
+                android:id="@+id/rbReceivedConfigs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="Received Configs" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteY="16dp">
+
+            <RadioButton
+                android:id="@+id/rbTransmitingTelecom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="Transmiting" />
+
+            <RadioButton
+                android:id="@+id/rbRecordingTelecom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="Recording" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ToggleButton
+        android:id="@+id/tbTransmissao"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/linearLayout5"
+        android:layout_centerHorizontal="true"
+        android:text="Iniciar transmissao"
+        android:textOff="Iniciar Transmissao"
+        android:textOn="Parar Transmissao" />
+
+    <Button
+        android:id="@+id/btnGraficos"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/tbTransmissao"
+        android:layout_centerHorizontal="true"
+        android:text="Ver graficos" />
+
+    <Button
+        android:id="@+id/btnFinalizarTeste"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="175dp"
+        android:text="Finalizar teste" />
+
+    <Button
+        android:id="@+id/btnZerarSensores"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnGraficos"
+        android:layout_centerHorizontal="true"
+        android:text="Zerar sensores" />
+
+    <ToggleButton
+        android:id="@+id/tbGravacao"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textOff="Iniciar Gravaçao"
+        android:textOn="Pausar Gravaçao" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnPendrive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Passar para Pendrive" />
+
+        <Button
+            android:id="@+id/btnBluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Receber via Bluetooth" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="56dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnReiniciar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reiniciar plataforma" />
+
+        <Button
+            android:id="@+id/btnDesligar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Desligar plataforma" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnTerminal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Abrir Terminal" />
+
+</RelativeLayout>

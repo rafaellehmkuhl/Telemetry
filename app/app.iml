@@ -96,6 +96,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-verifier" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-apk" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-main-apk-res" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-resources" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaPrecompile" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifest-checker" />
@@ -118,7 +119,9 @@
     <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:/home/rafael/Bancada Mitica 2.0 - TCC/Codigo/Telemetria-App/Telemetry/app/libs/usbserial.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-v4-21.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-1.1.2" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:21.0.3@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.2@jar" level="project" />
     <orderEntry type="module" module-name="eventbus-2.4.0" />
     <orderEntry type="module" module-name="achartengine-1.2.0" />
   </component>

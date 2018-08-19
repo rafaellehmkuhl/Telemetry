@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="whitesun.telemetry" >
+    package="whitesun.telemetry">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -13,10 +13,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,37 +26,36 @@
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
+            <!--<meta-data-->
+                <!--android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"-->
+                <!--android:resource="@xml/device_filter" />-->
         </activity>
         <activity
             android:name=".Sensors"
             android:label="@string/title_activity_sensors"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EstacaoTerrestre"
             android:label="@string/estacaoTerrestre"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Grafico"
-            android:label="@string/title_activity_grafico" >
-        </activity>
+            android:label="@string/title_activity_grafico" />
         <activity
             android:name=".Painel_Principal"
-            android:label="Painel" >
-        </activity>
+            android:label="Painel" />
         <activity
             android:name=".Painel_Telecomandos"
-            android:label="Painel Telecomandos" >
-        </activity>
+            android:label="Painel Telecomandos" />
         <activity
             android:name=".Painel_Graficos_geral"
-            android:label="Painel Gráficos" >
-        </activity>
+            android:label="Painel Gráficos" />
+        <activity android:name=".GroundstationConnection" />
+        <activity android:name=".GroundstationConfiguration" />
+        <activity
+            android:name=".GroundstationTelecomandos"
+            android:label="@string/title_activity_groundstation_telecomandos"></activity>
     </application>
 
 </manifest>

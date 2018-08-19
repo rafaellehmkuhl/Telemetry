@@ -113,5 +113,6 @@
     <string name="action_groundstation">Ground station</string>
     <string name="action_privacypolitics">Privacy Policy</string>
     <string name="selectall">Select All</string>
+    <string name="title_activity_groundstation_telecomandos">GroundstationTelecomandos</string>
 
 </resources>

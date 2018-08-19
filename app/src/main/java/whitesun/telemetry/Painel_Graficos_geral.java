@@ -2,13 +2,18 @@ package whitesun.telemetry;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
@@ -27,33 +32,34 @@ import de.greenrobot.event.EventBus;
 
 
 public class Painel_Graficos_geral extends Activity{
-    private TextView tvGpsStatus;
-    private TextView tvModoOperacao;
-    private TextView tvWow;
-    private TextView tvEscritaCartao;
-    private TextView tvVcas;
-    private LinearLayout chartVcas;
-    private TextView tvHps;
-    private LinearLayout chartHps;
-    private TextView tvRpm1;
-    private LinearLayout chartRpm1;
-    private TextView tvRpm2;
-    private LinearLayout chartRpm2;
-    private TextView tvGps;
-    private LinearLayout chartGps;
+    private TextView tvGraf1;
+    private LinearLayout chartGraf1;
+    private ImageButton btnSelectGraf1;
+    private TextView tvGraf2;
+    private LinearLayout chartGraf2;
+    private ImageButton btnSelectGraf2;
+    private TextView tvGraf3;
+    private LinearLayout chartGraf3;
+    private ImageButton btnSelectGraf3;
+
     private EventBus bus = EventBus.getDefault();
 
-    private Graf grafVcas = new Graf();
-    private Graf grafHps = new Graf();
-    private Graf grafRpm1 = new Graf();
-    private Graf grafRpm2 = new Graf();
-    private Graf grafGPSxy = new Graf();
+    private Graf graf1= new Graf();
+    private Graf graf2 = new Graf();
+    private Graf graf3 = new Graf();
 
     private boolean temX = false;
     private boolean temY = false;
     float ultimoX = 0;
     float ultimoY = 0;
+    int idDadoGraf1 = -1;
+    int idDadoGraf2 = -1;
+    int idDadoGraf3 = -1;
+    private boolean graf1Selected = false;
+    private boolean graf2Selected = false;
+    private boolean graf3Selected = false;
 
+    String apelidoDados[] = new String[GroundstationConnection.protocolo.getDados().size()];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,106 +67,145 @@ public class Painel_Graficos_geral extends Activity{
         setContentView(R.layout.grafico_geral);
         findViews();
 
-        grafVcas.setupChart("Velocidade calibrada (m/s)", chartVcas, tvVcas, false);
-        grafHps.setupChart("Altitude pressão (ft)", chartHps, tvHps, false);
-        grafRpm1.setupChart("RPM 1", chartRpm1, tvRpm1, false);
-        grafRpm2.setupChart("RPM 2", chartRpm2, tvRpm2, false);
-        grafGPSxy.setupChart("Gps X Y (m)", chartGps, tvGps, true);
-
-
+        graf1.setupChart("Grafico 1", chartGraf1, tvGraf1);
+        graf2.setupChart("Grafico 2", chartGraf2, tvGraf2);
+        graf3.setupChart("Grafico 3", chartGraf3, tvGraf3);
 
         bus.register(this);
-        grafVcas.startMyTask();
-        grafHps.startMyTask();
-        grafRpm1.startMyTask();
-        grafRpm2.startMyTask();
-        grafGPSxy.startMyTask();
 
+        graf1.startMyTask();
+        graf2.startMyTask();
+        graf3.startMyTask();
+
+        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
+        idDadoGraf1 = user.getInt("idDadoGraf1", -1);
+        idDadoGraf2 = user.getInt("idDadoGraf2", -1);
+        idDadoGraf3 = user.getInt("idDadoGraf3", -1);
+        graf1Selected = user.getBoolean("graf1Selected", false);
+        graf2Selected = user.getBoolean("graf2Selected", false);
+        graf3Selected = user.getBoolean("graf3Selected", false);
+
+        for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
+            apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
+        }
+
+        graf1.mudarNome(apelidoDados[idDadoGraf1]);
+        graf2.mudarNome(apelidoDados[idDadoGraf2]);
+        graf3.mudarNome(apelidoDados[idDadoGraf3]);
     }
 
     @Override
     protected void onDestroy() {
         // Unregister
         bus.unregister(this);
-        grafVcas.getChart().cancel(true);
-        grafHps.getChart().cancel(true);
-        grafRpm1.getChart().cancel(true);
-        grafRpm2.getChart().cancel(true);
-        grafGPSxy.getChart().cancel(true);
+
+        graf1.getChart().cancel(true);
+        graf2.getChart().cancel(true);
+        graf3.getChart().cancel(true);
+
         super.onDestroy();
+
+        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
+        SharedPreferences.Editor ed = user.edit();
+        ed.putInt("idDadoGraf1", idDadoGraf1);
+        ed.putInt("idDadoGraf2", idDadoGraf2);
+        ed.putInt("idDadoGraf3", idDadoGraf3);
+        ed.putBoolean("graf1Selected", graf1Selected);
+        ed.putBoolean("graf2Selected", graf2Selected);
+        ed.putBoolean("graf3Selected", graf3Selected);
+        ed.apply();
     }
 
 
     public void onEvent(EventoTrocaDados evento) {
-        if (evento.getApelido().equals("nfx")){ //GPS
-            tvGpsStatus.setText("GPS St. :" + evento.getValor() + "d");
-        }
-        if (evento.getApelido().equals("sin")){
-            tvModoOperacao.setText("Modo: " + evento.getValor());
-        }
-        if (evento.getApelido().equals("wow")){
-            tvWow.setText("Wow: " + evento.getValor());
-        }
-        if (evento.getApelido().equals("agr")){
-            tvEscritaCartao.setText("M:" + evento.getValor());
-        }
-        if (evento.getApelido().equals("vcs")){
-            grafVcas.atualiza(evento.getTempoRecebimento(), evento.getValor());
-        }
-        if (evento.getApelido().equals("hps")){
-            grafHps.atualiza(evento.getTempoRecebimento(), evento.getValor());
-        }
-        if (evento.getApelido().equals("rpm")){
-            grafRpm1.atualiza(evento.getTempoRecebimento(), evento.getValor());
-        }
-        if (evento.getApelido().equals("rpd")){
-            grafRpm2.atualiza(evento.getTempoRecebimento(), evento.getValor());
-        }
-        if (evento.getApelido().equals("gpx")){
-            temX = true;
-            ultimoX = evento.getValor();
-            if (temX && temY) {
-                System.out.println("Atualizou gps");
-                temX = false;
-                temY = false;
-                grafGPSxy.atualiza(ultimoX, ultimoY);
+
+        if (graf1Selected) {
+            if (evento.getApelido().equals(apelidoDados[idDadoGraf1])) {
+                graf1.atualiza(evento.getTempoRecebimento(), evento.getValor());
             }
         }
-        if (evento.getApelido().equals("gpy")) {
-            temY = true;
-            ultimoY = evento.getValor();
-            if (temX && temY) {
-                System.out.println("Atualizou gps");
-                temX = false;
-                temY = false;
-                grafGPSxy.atualiza(ultimoX, ultimoY);
+        if (graf2Selected) {
+            if (evento.getApelido().equals(apelidoDados[idDadoGraf2])) {
+                graf2.atualiza(evento.getTempoRecebimento(), evento.getValor());
+            }
+        }
+        if (graf3Selected) {
+            if (evento.getApelido().equals(apelidoDados[idDadoGraf3])) {
+                graf3.atualiza(evento.getTempoRecebimento(), evento.getValor());
             }
         }
     }
 
-
-
-    /**
-     * Find the Views in the layout<br />
-     * <br />
-     * Auto-created on 2016-09-05 20:46:49 by Android Layout Finder
-     * (http://www.buzzingandroid.com/tools/android-layout-finder)
-     */
     private void findViews() {
-        tvGpsStatus = (TextView)findViewById( R.id.tvGpsStatus );
-        tvModoOperacao = (TextView)findViewById( R.id.tvModoOperacao );
-        tvWow = (TextView)findViewById( R.id.tv_wow );
-        tvEscritaCartao = (TextView)findViewById( R.id.tv_escrita_cartao );
-        tvVcas = (TextView)findViewById( R.id.tv_vcas );
-        chartVcas = (LinearLayout)findViewById( R.id.chart_vcas );
-        tvHps = (TextView)findViewById( R.id.tv_hps );
-        chartHps = (LinearLayout)findViewById( R.id.chart_hps );
-        tvRpm1 = (TextView)findViewById( R.id.tv_rpm1 );
-        chartRpm1 = (LinearLayout)findViewById( R.id.chart_rpm1 );
-        tvRpm2 = (TextView)findViewById( R.id.tv_rpm2 );
-        chartRpm2 = (LinearLayout)findViewById( R.id.chart_rpm2 );
-        tvGps = (TextView)findViewById( R.id.tvGps );
-        chartGps = (LinearLayout)findViewById( R.id.chart_gps );
+        tvGraf1 = (TextView)findViewById( R.id.tvGraf1);
+        chartGraf1 = (LinearLayout)findViewById(R.id.chartGraf1);
+        btnSelectGraf1 = (ImageButton) findViewById(R.id.btnSelectGraf1);
+        tvGraf2 = (TextView)findViewById( R.id.tvGraf2);
+        chartGraf2 = (LinearLayout)findViewById(R.id.chartGraf2);
+        btnSelectGraf2 = (ImageButton) findViewById(R.id.btnSelectGraf2);
+        tvGraf3 = (TextView)findViewById( R.id.tvGraf3);
+        chartGraf3 = (LinearLayout)findViewById(R.id.chartGraf3);
+        btnSelectGraf3 = (ImageButton) findViewById(R.id.btnSelectGraf3);
+
+        btnSelectGraf1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
+                    apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
+                builder.setTitle("Selecione o identificador");
+                builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        idDadoGraf1 = which;
+                        graf1Selected = true;
+                        graf1.mudarNome(apelidoDados[idDadoGraf1]);
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        btnSelectGraf2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
+                    apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
+                builder.setTitle("Selecione o identificador");
+                builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        idDadoGraf2 = which;
+                        graf2Selected = true;
+                        graf2.mudarNome(apelidoDados[idDadoGraf2]);
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        btnSelectGraf3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
+                    apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
+                builder.setTitle("Selecione o identificador");
+                builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        idDadoGraf3 = which;
+                        graf3Selected = true;
+                        graf3.mudarNome(apelidoDados[idDadoGraf3]);
+                    }
+                });
+                builder.show();
+            }
+        });
     }
 
     public class Graf {
@@ -177,7 +222,7 @@ public class Painel_Graficos_geral extends Activity{
 
         boolean atualizou;
 
-        float maxX = -1, maxY = 0, minX = -1, minY = 0;
+        float maxX = -1, maxY = 1, minX = 0, minY = 0;
         float valorAtual, tempoAtual;
         private String nome;
 
@@ -192,105 +237,59 @@ public class Painel_Graficos_geral extends Activity{
             valorAtual = val;
         }
 
-        private void setupChart(String var, LinearLayout chartContainer, TextView tvnomDad, boolean isGp){
+        private void mudarNome(String novoNome) {
+            nome = novoNome;
+        }
+
+        private void setupChart(String var, LinearLayout chartContainer, TextView tvnomDad){
             tvNomeDado = tvnomDad;
             nome = var;
-            isGps = isGp;
 
-            if(!isGps) {
+            // Creating an  XYSeries for Visits
+            visitsSeries = new XYSeries("Unique Visitors");
+            // Creating a dataset to hold each series
+            dataset = new XYMultipleSeriesDataset();
+            // Adding Visits Series to the dataset
+            dataset.addSeries(visitsSeries);
 
-                // Creating an  XYSeries for Visits
-                visitsSeries = new XYSeries("Unique Visitors");
-                // Creating a dataset to hold each series
-                dataset = new XYMultipleSeriesDataset();
-                // Adding Visits Series to the dataset
-                dataset.addSeries(visitsSeries);
-
-                // Creating XYSeriesRenderer to customize visitsSeries
-                visitsRenderer = new XYSeriesRenderer();
-                //  visitsRenderer.setColor(Color.BLACK);
-                // visitsRenderer.setPointStyle(PointStyle.CIRCLE);
-                //        visitsRenderer.setFillPoints(true);
-                visitsRenderer.setLineWidth(2);
-                visitsRenderer.setDisplayChartValues(false);
+            // Creating XYSeriesRenderer to customize visitsSeries
+            visitsRenderer = new XYSeriesRenderer();
+            //  visitsRenderer.setColor(Color.BLACK);
+            // visitsRenderer.setPointStyle(PointStyle.CIRCLE);
+            //        visitsRenderer.setFillPoints(true);
+            visitsRenderer.setLineWidth(2);
+            visitsRenderer.setDisplayChartValues(false);
 
 
-                // Creating a XYMultipleSeriesRenderer to customize the whole chart
-                multiRenderer = new XYMultipleSeriesRenderer();
-                multiRenderer.setYLabelsAlign(Paint.Align.RIGHT);
-                multiRenderer.setChartTitle("");
-                multiRenderer.setXTitle("");
-                multiRenderer.setYTitle("");
-                multiRenderer.setZoomButtonsVisible(false);
-                multiRenderer.setShowLegend(false);
-                multiRenderer.setLabelsTextSize(25);
-                multiRenderer.setMargins(new int[]{20, 100, 5, 20});
+            // Creating a XYMultipleSeriesRenderer to customize the whole chart
+            multiRenderer = new XYMultipleSeriesRenderer();
+            multiRenderer.setYLabelsAlign(Paint.Align.RIGHT);
+            multiRenderer.setChartTitle("");
+            multiRenderer.setXTitle("");
+            multiRenderer.setYTitle("");
+            multiRenderer.setZoomButtonsVisible(false);
+            multiRenderer.setShowLegend(false);
+            multiRenderer.setLabelsTextSize(25);
+            multiRenderer.setMargins(new int[]{20, 100, 5, 20});
 
-                multiRenderer.setApplyBackgroundColor(true);
-                multiRenderer.setBackgroundColor(Color.TRANSPARENT);
-                multiRenderer.setMarginsColor(Color.argb(0x00, 0x01, 0x01, 0x01));
+            multiRenderer.setApplyBackgroundColor(true);
+            multiRenderer.setBackgroundColor(Color.TRANSPARENT);
+            multiRenderer.setMarginsColor(Color.argb(0x00, 0x01, 0x01, 0x01));
 
-                multiRenderer.setYLabelsColor(0, Color.BLACK);
-                multiRenderer.setXLabelsColor(Color.BLACK);
-                multiRenderer.setShowGrid(true);
-                multiRenderer.setGridColor(Color.GRAY);
+            multiRenderer.setYLabelsColor(0, Color.BLACK);
+            multiRenderer.setXLabelsColor(Color.BLACK);
+            multiRenderer.setShowGrid(true);
+            multiRenderer.setGridColor(Color.GRAY);
 
-                // Adding visitsRenderer to multipleRenderer
-                // Note: The order of adding dataseries to dataset and renderers to multipleRenderer
-                // should be same
-                multiRenderer.addSeriesRenderer(visitsRenderer);
+            // Adding visitsRenderer to multipleRenderer
+            // Note: The order of adding dataseries to dataset and renderers to multipleRenderer
+            // should be same
+            multiRenderer.addSeriesRenderer(visitsRenderer);
 
-                mChart = ChartFactory.getLineChartView(getBaseContext(), dataset, multiRenderer);
+            mChart = ChartFactory.getLineChartView(getBaseContext(), dataset, multiRenderer);
 
-                // Adding the Line Chart to the LinearLayout
-                chartContainer.addView(mChart);
-            } else {
-                // Creating an  XYSeries for Visits
-                visitsSeries = new XYSeries("Unique Visitors");
-                // Creating a dataset to hold each series
-                dataset = new XYMultipleSeriesDataset();
-                // Adding Visits Series to the dataset
-                dataset.addSeries(visitsSeries);
-                // Creating XYSeriesRenderer to customize visitsSeries
-                visitsRenderer = new XYSeriesRenderer();
-                visitsRenderer.setPointStyle(PointStyle.CIRCLE);
-                visitsRenderer.setFillPoints(true);
-                visitsRenderer.setDisplayChartValues(false);
-
-
-                // Creating a XYMultipleSeriesRenderer to customize the whole chart
-                multiRenderer = new XYMultipleSeriesRenderer();
-                multiRenderer.setYLabelsAlign(Paint.Align.RIGHT);
-                multiRenderer.setChartTitle("");
-                multiRenderer.setXTitle("");
-                multiRenderer.setYTitle("");
-                multiRenderer.setZoomButtonsVisible(false);
-                multiRenderer.setShowLegend(false);
-                multiRenderer.setLabelsTextSize(25);
-                multiRenderer.setMargins(new int[]{20, 100, 5, 20});
-                multiRenderer.setApplyBackgroundColor(true);
-                multiRenderer.setBackgroundColor(Color.TRANSPARENT);
-                multiRenderer.setMarginsColor(Color.argb(0x00, 0x01, 0x01, 0x01));
-                multiRenderer.setPointSize(7f);
-
-                multiRenderer.setYLabelsColor(0, Color.BLACK);
-                multiRenderer.setXLabelsColor(Color.BLACK);
-                multiRenderer.setShowGrid(true);
-                multiRenderer.setGridColor(Color.GRAY);
-                multiRenderer.setXLabels(10);
-                multiRenderer.setYLabels(10);
-
-
-                // Adding visitsRenderer to multipleRenderer
-                // Note: The order of adding dataseries to dataset and renderers to multipleRenderer
-                // should be same
-                multiRenderer.addSeriesRenderer(visitsRenderer);
-
-                mChart = ChartFactory.getScatterChartView(getBaseContext(), dataset, multiRenderer);
-
-                // Adding the Line Chart to the LinearLayout
-                chartContainer.addView(mChart);
-            }
+            // Adding the Line Chart to the LinearLayout
+            chartContainer.addView(mChart);
         }
 
 
@@ -302,7 +301,6 @@ public class Painel_Graficos_geral extends Activity{
                 chart.execute();
             }
         }
-
 
 
         private class ChartTask extends AsyncTask<Void, String, Void> {
@@ -327,45 +325,7 @@ public class Painel_Graficos_geral extends Activity{
             // Plotting generated data in the graph
             @Override
             protected void onProgressUpdate(String... values) {
-                if(!isGps) {
-                    if (tempoAtual != tempoAnterior) {
-                        if (minX == -1) {
-                            minX = tempoAtual;
-                        }
-                        if (maxX == -1) {
-                            maxX = tempoAtual;
-                        }
-                        if (tempoAtual < minX) {
-                            minX = tempoAtual;
-                            multiRenderer.setXAxisMin(minX);
-                        }
-                        if (tempoAtual > maxX) {
-                            maxX = tempoAtual;
-                            multiRenderer.setXAxisMax(maxX);
-                        }
-                        if (valorAtual > maxY) {
-                            maxY = valorAtual*1.05f;
-                            multiRenderer.setYAxisMax(maxY);
-                        }
-                        if (valorAtual < minY) {
-                            minY = valorAtual*1.05f;
-                            multiRenderer.setYAxisMin(minY);
-                        }
-                        if (!tvNomeDado.getText().toString().equals(nome + " = " + valorAtual)) {
-                            tvNomeDado.setText(nome + " = " + valorAtual);
-                            //      multiRenderer.setChartTitle(nome);
-                            visitsSeries.setTitle(nome);
-
-                        }
-                        if(visitsSeries.getItemCount()>300){
-                            visitsSeries.remove(0);
-                        }
-                        visitsSeries.add(tempoAtual, valorAtual);
-                        multiRenderer.getSeriesRendererAt(0).setColor(Color.parseColor("#5159C2"));
-                        mChart.repaint();
-                        tempoAnterior = tempoAtual;
-                    }
-                } else {
+                if (tempoAtual != tempoAnterior) {
                     if (minX == -1) {
                         minX = tempoAtual;
                     }
@@ -380,26 +340,25 @@ public class Painel_Graficos_geral extends Activity{
                         maxX = tempoAtual;
                         multiRenderer.setXAxisMax(maxX);
                     }
-                    if (valorAtual > maxY) {
-                        maxY = valorAtual;
+                    if (valorAtual > maxY || valorAtual < minY) {
+                        maxY = valorAtual * 1.20f;
                         multiRenderer.setYAxisMax(maxY);
-                    }
-                    if (valorAtual < minY) {
-                        minY = valorAtual;
+                        minY = valorAtual * 0.8f;
                         multiRenderer.setYAxisMin(minY);
                     }
-                    if(visitsSeries.getItemCount()>1200){
+                    if (!tvNomeDado.getText().toString().equals(nome + " = " + valorAtual)) {
+                        tvNomeDado.setText(nome + " = " + valorAtual);
+                        //      multiRenderer.setChartTitle(nome);
+                        visitsSeries.setTitle(nome);
+
+                    }
+                    if(visitsSeries.getItemCount()>100){
                         visitsSeries.remove(0);
                     }
-                    double absoluto = Math.pow((Math.abs(tempoAtual*tempoAtual)+Math.abs(valorAtual*valorAtual)), 0.5);
-
-                    if (!tvNomeDado.getText().toString().equals(nome + " = " + absoluto)) {
-                        tvNomeDado.setText(nome + " = " + valorAtual);
-                        visitsSeries.setTitle(nome);
-                    }
                     visitsSeries.add(tempoAtual, valorAtual);
-                    multiRenderer.getSeriesRendererAt(0).setColor(Color.parseColor("#E8660C"));
+                    multiRenderer.getSeriesRendererAt(0).setColor(Color.parseColor("#5159C2"));
                     mChart.repaint();
+                    tempoAnterior = tempoAtual;
                 }
             }
         }

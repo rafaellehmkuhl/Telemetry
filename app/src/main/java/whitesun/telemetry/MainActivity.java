@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(MainActivity.this, EstacaoTerrestre.class);
+                Intent myIntent = new Intent(MainActivity.this, GroundstationConnection.class);
                 MainActivity.this.startActivity(myIntent);
             }
 

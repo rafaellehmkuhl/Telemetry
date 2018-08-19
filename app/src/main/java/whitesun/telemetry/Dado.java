@@ -44,8 +44,8 @@ public class Dado {
         long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
         long sinceMidnight = (rightNow.getTimeInMillis() + offset) % (24 * 60 * 60 * 1000);
 
-        float segundosMeianoite = (float) sinceMidnight / 1000;
-        this.tempoRecebimento.add(segundosMeianoite);
+        float segundosDesdeMeianoite = (float) sinceMidnight / 1000;
+        this.tempoRecebimento.add(segundosDesdeMeianoite);
     }
 
 

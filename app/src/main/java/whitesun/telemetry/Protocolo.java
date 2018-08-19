@@ -68,8 +68,11 @@ public class Protocolo {
         // Se sobrou mais algum começo, chama a função de novo
         if (input.indexOf("!") != -1) {
             return processaInput(processado);
+            // TODO: Verificar com o Mariga se isso aqui nao gera um problema de por exemplo nao retornar o primeiro dado processado
         }
         return processado;
+        // TODO: Verificar com o Mariga se essa funçao nao ta retornando lixo, isto é, caso a condiçao de dado ideal seja
+        // encontrada ("!apelido=valor@") nao resta nada na string "processado".
     }
 
     public List<Dado> getDados(){
