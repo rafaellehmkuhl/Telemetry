@@ -44,10 +44,7 @@ public class Protocolo {
             // O apelido deve ter 3 letras
             if (apelido.length() == 3) {
                 // Só deve conter letras
-                if (isAlpha(apelido)) {
-                    // Se tudo isso estiver OK, sinaliza que ta blz
-                    apelidoOK = true;
-                }
+                apelidoOK = true;
             }
 
             // Pega valor do item
@@ -78,20 +75,6 @@ public class Protocolo {
     public List<Dado> getDados(){
 
         return dados;
-    }
-
-
-
-    public boolean isAlpha(String name) {
-
-        char[] chars = name.toCharArray();
-
-        for (char c : chars) {
-            if(!Character.isLetter(c)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void atualizaDados(String apelido, float fvalor) {

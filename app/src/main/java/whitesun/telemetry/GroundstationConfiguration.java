@@ -12,6 +12,8 @@ import android.widget.EditText;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.greenrobot.event.EventBus;
+
 public class GroundstationConfiguration extends Activity {
 
     private EditText editNomeAeronave;

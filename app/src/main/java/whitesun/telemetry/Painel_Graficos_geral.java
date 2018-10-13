@@ -77,21 +77,21 @@ public class Painel_Graficos_geral extends Activity{
         graf2.startMyTask();
         graf3.startMyTask();
 
-        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
-        idDadoGraf1 = user.getInt("idDadoGraf1", -1);
-        idDadoGraf2 = user.getInt("idDadoGraf2", -1);
-        idDadoGraf3 = user.getInt("idDadoGraf3", -1);
-        graf1Selected = user.getBoolean("graf1Selected", false);
-        graf2Selected = user.getBoolean("graf2Selected", false);
-        graf3Selected = user.getBoolean("graf3Selected", false);
-
+//        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
+//        idDadoGraf1 = user.getInt("idDadoGraf1", -1);
+//        idDadoGraf2 = user.getInt("idDadoGraf2", -1);
+//        idDadoGraf3 = user.getInt("idDadoGraf3", -1);
+//        graf1Selected = user.getBoolean("graf1Selected", false);
+//        graf2Selected = user.getBoolean("graf2Selected", false);
+//        graf3Selected = user.getBoolean("graf3Selected", false);
+//
         for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
             apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
         }
-
-        graf1.mudarNome(apelidoDados[idDadoGraf1]);
-        graf2.mudarNome(apelidoDados[idDadoGraf2]);
-        graf3.mudarNome(apelidoDados[idDadoGraf3]);
+//
+//        graf1.mudarNome(apelidoDados[idDadoGraf1]);
+//        graf2.mudarNome(apelidoDados[idDadoGraf2]);
+//        graf3.mudarNome(apelidoDados[idDadoGraf3]);
     }
 
     @Override
@@ -105,15 +105,15 @@ public class Painel_Graficos_geral extends Activity{
 
         super.onDestroy();
 
-        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
-        SharedPreferences.Editor ed = user.edit();
-        ed.putInt("idDadoGraf1", idDadoGraf1);
-        ed.putInt("idDadoGraf2", idDadoGraf2);
-        ed.putInt("idDadoGraf3", idDadoGraf3);
-        ed.putBoolean("graf1Selected", graf1Selected);
-        ed.putBoolean("graf2Selected", graf2Selected);
-        ed.putBoolean("graf3Selected", graf3Selected);
-        ed.apply();
+//        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
+//        SharedPreferences.Editor ed = user.edit();
+//        ed.putInt("idDadoGraf1", idDadoGraf1);
+//        ed.putInt("idDadoGraf2", idDadoGraf2);
+//        ed.putInt("idDadoGraf3", idDadoGraf3);
+//        ed.putBoolean("graf1Selected", graf1Selected);
+//        ed.putBoolean("graf2Selected", graf2Selected);
+//        ed.putBoolean("graf3Selected", graf3Selected);
+//        ed.apply();
     }
 
 
@@ -149,10 +149,6 @@ public class Painel_Graficos_geral extends Activity{
 
         btnSelectGraf1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
-                    apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
-                }
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
                 builder.setTitle("Selecione o identificador");
                 builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
@@ -169,10 +165,6 @@ public class Painel_Graficos_geral extends Activity{
 
         btnSelectGraf2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
-                    apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
-                }
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
                 builder.setTitle("Selecione o identificador");
                 builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
@@ -189,10 +181,6 @@ public class Painel_Graficos_geral extends Activity{
 
         btnSelectGraf3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
-                    apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
-                }
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
                 builder.setTitle("Selecione o identificador");
                 builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
@@ -340,9 +328,11 @@ public class Painel_Graficos_geral extends Activity{
                         maxX = tempoAtual;
                         multiRenderer.setXAxisMax(maxX);
                     }
-                    if (valorAtual > maxY || valorAtual < minY) {
+                    if (valorAtual > maxY && valorAtual < 1000) {
                         maxY = valorAtual * 1.20f;
                         multiRenderer.setYAxisMax(maxY);
+                    }
+                    if (valorAtual < minY && valorAtual > -1000) {
                         minY = valorAtual * 0.8f;
                         multiRenderer.setYAxisMin(minY);
                     }
