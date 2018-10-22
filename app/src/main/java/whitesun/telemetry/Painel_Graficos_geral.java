@@ -88,6 +88,8 @@ public class Painel_Graficos_geral extends Activity{
         for (int i = 0; i < GroundstationConnection.protocolo.getDados().size(); i++) {
             apelidoDados[i] = GroundstationConnection.protocolo.getDados().get(i).getApelido();
         }
+
+        GroundstationConnection.sendData("!dtg@");
 //
 //        graf1.mudarNome(apelidoDados[idDadoGraf1]);
 //        graf2.mudarNome(apelidoDados[idDadoGraf2]);
@@ -104,6 +106,16 @@ public class Painel_Graficos_geral extends Activity{
         graf3.getChart().cancel(true);
 
         super.onDestroy();
+
+        if (idDadoGraf1 != -1) {
+            GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf1] + "=False@");
+        }
+        if (idDadoGraf2 != -1) {
+            GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf2] + "=False@");
+        }
+        if (idDadoGraf3 != -1) {
+            GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf3] + "=False@");
+        }
 
 //        SharedPreferences user = getApplicationContext().getSharedPreferences("test", MODE_PRIVATE);
 //        SharedPreferences.Editor ed = user.edit();
@@ -149,6 +161,9 @@ public class Painel_Graficos_geral extends Activity{
 
         btnSelectGraf1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (idDadoGraf1 != -1) {
+                    GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf1] + "=False@");
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
                 builder.setTitle("Selecione o identificador");
                 builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
@@ -157,6 +172,7 @@ public class Painel_Graficos_geral extends Activity{
                         idDadoGraf1 = which;
                         graf1Selected = true;
                         graf1.mudarNome(apelidoDados[idDadoGraf1]);
+                        GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf1] + "=True@");
                     }
                 });
                 builder.show();
@@ -165,6 +181,9 @@ public class Painel_Graficos_geral extends Activity{
 
         btnSelectGraf2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (idDadoGraf2 != -1) {
+                    GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf2] + "=False@");
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
                 builder.setTitle("Selecione o identificador");
                 builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
@@ -173,6 +192,7 @@ public class Painel_Graficos_geral extends Activity{
                         idDadoGraf2 = which;
                         graf2Selected = true;
                         graf2.mudarNome(apelidoDados[idDadoGraf2]);
+                        GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf2] + "=True@");
                     }
                 });
                 builder.show();
@@ -181,6 +201,9 @@ public class Painel_Graficos_geral extends Activity{
 
         btnSelectGraf3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (idDadoGraf3 != -1) {
+                    GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf3] + "=False@");
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(Painel_Graficos_geral.this);
                 builder.setTitle("Selecione o identificador");
                 builder.setItems(apelidoDados, new DialogInterface.OnClickListener() {
@@ -189,6 +212,7 @@ public class Painel_Graficos_geral extends Activity{
                         idDadoGraf3 = which;
                         graf3Selected = true;
                         graf3.mudarNome(apelidoDados[idDadoGraf3]);
+                        GroundstationConnection.sendData("!sts:" + apelidoDados[idDadoGraf3] + "=True@");
                     }
                 });
                 builder.show();
