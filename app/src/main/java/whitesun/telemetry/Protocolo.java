@@ -14,13 +14,13 @@ public class Protocolo {
         String itemDetectado = input;
 
         if (input.equals("")) {
-            return input;
+            return "";
         }
 
         int posicaoInicio = input.indexOf("!");
 
         if (posicaoInicio == -1) {
-            return input;
+            return "";
         } else  {
             input = input.substring(posicaoInicio+1);
         }
@@ -28,7 +28,7 @@ public class Protocolo {
         int posicaoFim = input.indexOf("@");
 
         if (posicaoFim == -1) {
-            return input;
+            return "";
         } else {
             itemDetectado = input.substring(0, posicaoFim);
 
@@ -38,7 +38,7 @@ public class Protocolo {
         int posicaoSeparador = itemDetectado.indexOf(';');
 
         if (posicaoSeparador == -1) {
-            return input;
+            return "";
         } else {
             parteValor = itemDetectado.substring(0, posicaoSeparador);
             parteChecksum = itemDetectado.substring(posicaoSeparador+1);
@@ -72,14 +72,7 @@ public class Protocolo {
             }
         }
 
-        if (input.indexOf("!") != -1) {
-            return processaInput(processado);
-            // TODO: Verificar com o Mariga se isso aqui nao gera um problema de por exemplo nao retornar o primeiro dado processado
-        }
-
-        return processado;
-        // TODO: Verificar com o Mariga se essa funçao nao ta retornando lixo, isto é, caso a condiçao de dado ideal seja
-        // encontrada ("!apelido=valor@") nao resta nada na string "processado".
+        return "";
     }
 
     public List<Dado> getDados(){
