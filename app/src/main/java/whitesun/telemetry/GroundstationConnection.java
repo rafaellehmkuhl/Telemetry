@@ -150,7 +150,7 @@ public class GroundstationConnection extends Activity {
             }
         };
 
-        timerProcessaDado.schedule(taskProcessaDado, 0, 100);
+        timerProcessaDado.schedule(taskProcessaDado, 0, 10);
 
     }
 
@@ -179,7 +179,7 @@ public class GroundstationConnection extends Activity {
             }
         };
 
-        timerMostraDado.schedule(taskMostraDado, 0, 100);
+        timerMostraDado.schedule(taskMostraDado, 0, 10);
     }
 
     public void registerHeartbeatTimer() {
@@ -267,7 +267,7 @@ public class GroundstationConnection extends Activity {
             }
         };
 
-        timerCheckHeartbeat.schedule(taskCheckHeartbeat, 0, 100);
+        timerCheckHeartbeat.schedule(taskCheckHeartbeat, 0, 10);
     }
 
     public void registerUSB() {
